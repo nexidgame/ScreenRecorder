@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Screen Recorder</string>
+    <string name="notif_channel">Perekaman layar</string>
+    <string name="notif_title">Sedang merekam layar</string>
+    <string name="notif_text">Ketuk Berhenti untuk menyimpan video</string>
+    <string name="stop">Berhenti</string>
+    <string name="saved">Tersimpan di Movies/ScreenRecorder</string>
+    <string name="failed">Perekaman gagal atau terlalu singkat</string>
+</resources>
