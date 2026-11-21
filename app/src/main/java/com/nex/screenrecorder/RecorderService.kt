@@ -58,6 +58,8 @@ const val EXTRA_ACODEC = "acodec"
 const val EXTRA_ABR = "abr"
 const val EXTRA_GVOL = "gvol"
 const val EXTRA_MVOL = "mvol"
+const val EXTRA_NR = "nr"
+const val EXTRA_AEC = "aec"
 
 class RecorderService : Service() {
 
@@ -137,6 +139,8 @@ class RecorderService : Service() {
             val abr = intent.getIntExtra(EXTRA_ABR, 128)
             val gameGain = intent.getIntExtra(EXTRA_GVOL, 100) / 100f
             val micGain = intent.getIntExtra(EXTRA_MVOL, 100) / 100f
+            val noiseReduction = intent.getBooleanExtra(EXTRA_NR, false)
+            val echoCancel = intent.getBooleanExtra(EXTRA_AEC, false)
 
             val name = "Rec_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
             val values = ContentValues().apply {
@@ -163,6 +167,8 @@ class RecorderService : Service() {
                 val aTmp = File(cacheDir, "audio_$name.m4a")
                 val cand = InternalAudioRecorder(
                     proj, sampleRate, channels, acodec, aTmp, mixMic, gameGain, micGain, abr,
+                    noiseSuppress = noiseReduction && mixMic,
+                    echoCancel = echoCancel && mixMic,
                 )
                 try {
                     cand.prepare()
@@ -171,6 +177,16 @@ class RecorderService : Service() {
                     if (cand.micFailed) {
                         Toast.makeText(
                             this, "Mikrofon gagal dibuka, merekam suara internal saja", Toast.LENGTH_LONG,
+                        ).show()
+                    }
+                    if (cand.noiseUnavailable) {
+                        Toast.makeText(
+                            this, "Peredam kebisingan tidak tersedia di HP ini, dilewati", Toast.LENGTH_LONG,
+                        ).show()
+                    }
+                    if (cand.echoUnavailable) {
+                        Toast.makeText(
+                            this, "Pembatal gema tidak tersedia di HP ini, dilewati", Toast.LENGTH_LONG,
                         ).show()
                     }
                 } catch (e: Exception) {
