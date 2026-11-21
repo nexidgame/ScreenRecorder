@@ -1,8 +1,10 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
+    <!-- Badan kamera -->
     <path android:fillColor="#FFFFFF"
-        android:pathData="M54,54m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0" />
-    <path android:fillColor="#E53935"
-        android:pathData="M54,54m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0" />
+        android:pathData="M35.5,39.5H59.3A4,4 0 0 1 63.3,43.5V64.5A4,4 0 0 1 59.3,68.5H35.5A4,4 0 0 1 31.5,64.5V43.5A4,4 0 0 1 35.5,39.5Z" />
+    <!-- Lensa -->
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M65,50L74.8,42.6Q76.5,41.4 76.5,43.6V64.4Q76.5,66.6 74.8,65.4L65,58Z" />
 </vector>
