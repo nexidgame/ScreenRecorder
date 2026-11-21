@@ -299,6 +299,43 @@ private fun AudioTab(s: RecSettings, recording: Boolean, update: (RecSettings) -
                 VolumeSlider("Volume mikrofon", s.micVolume, !recording) {
                     update(s.copy(micVolume = it))
                 }
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text("Peredam kebisingan", style = MaterialTheme.typography.bodyLarge)
+                    Switch(
+                        s.noiseReduction,
+                        { update(s.copy(noiseReduction = it)) },
+                        enabled = !recording,
+                    )
+                }
+                Text(
+                    "Noise Reduction: mengurangi suara latar (kipas, keyboard, keramaian) pada mikrofon " +
+                        "memakai efek bawaan Android. Hasilnya bergantung HP dan tidak tersedia di semua HP.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text("Pembatal Gema", style = MaterialTheme.typography.bodyLarge)
+                    Switch(
+                        s.echoCancel,
+                        { update(s.copy(echoCancel = it)) },
+                        enabled = !recording,
+                    )
+                }
+                Text(
+                    "Echo Cancellation: mengurangi suara game yang keluar dari speaker lalu tertangkap " +
+                        "lagi oleh mikrofon, supaya tidak terdengar dua kali. Hasilnya bergantung HP. " +
+                        "Tidak diperlukan jika memakai earphone.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
