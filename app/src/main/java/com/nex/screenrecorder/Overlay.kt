@@ -87,6 +87,8 @@ fun Activity.startRecordingService(code: Int, data: Intent) {
         .putExtra(EXTRA_ABR, s.audioBitrate)
         .putExtra(EXTRA_GVOL, s.gameVolume)
         .putExtra(EXTRA_MVOL, s.micVolume)
+        .putExtra(EXTRA_NR, s.noiseReduction)
+        .putExtra(EXTRA_AEC, s.echoCancel)
     ContextCompat.startForegroundService(this, i)
 }
 
