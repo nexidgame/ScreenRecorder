@@ -11,6 +11,8 @@ import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMuxer
 import android.media.MediaRecorder
+import android.media.audiofx.AcousticEchoCanceler
+import android.media.audiofx.NoiseSuppressor
 import android.media.projection.MediaProjection
 import java.io.File
 import java.io.FileDescriptor
@@ -33,9 +35,22 @@ class InternalAudioRecorder(
     private val gameGain: Float = 1f,
     private val micGain: Float = 1f,
     private val audioKbps: Int = 128,
+    private val noiseSuppress: Boolean = false, // peredam kebisingan bawaan Android pada mikrofon
+    private val echoCancel: Boolean = false,    // pembatal gema bawaan Android pada mikrofon
 ) {
     private var record: AudioRecord? = null
     private var micRecord: AudioRecord? = null
+    private var noiseSuppressor: NoiseSuppressor? = null
+
+    /** true jika peredam kebisingan diminta tetapi tidak tersedia di HP ini. */
+    @Volatile var noiseUnavailable = false
+        private set
+
+    private var echoCanceler: AcousticEchoCanceler? = null
+
+    /** true jika pembatal gema diminta tetapi tidak tersedia di HP ini. */
+    @Volatile var echoUnavailable = false
+        private set
     private var codec: MediaCodec? = null
     private var muxer: MediaMuxer? = null
     private var thread: Thread? = null
@@ -86,6 +101,24 @@ class InternalAudioRecorder(
                     error("Mikrofon gagal dibuka")
                 }
                 micRecord = m
+                if (noiseSuppress) {
+                    // Efek bawaan Android; dilewati jika HP tidak menyediakannya.
+                    noiseSuppressor = try {
+                        if (NoiseSuppressor.isAvailable()) {
+                            NoiseSuppressor.create(m.audioSessionId)?.also { it.setEnabled(true) }
+                        } else null
+                    } catch (e: Exception) { null }
+                    if (noiseSuppressor == null) noiseUnavailable = true
+                }
+                if (echoCancel) {
+                    // Efek bawaan Android; dilewati jika HP tidak menyediakannya.
+                    echoCanceler = try {
+                        if (AcousticEchoCanceler.isAvailable()) {
+                            AcousticEchoCanceler.create(m.audioSessionId)?.also { it.setEnabled(true) }
+                        } else null
+                    } catch (e: Exception) { null }
+                    if (echoCanceler == null) echoUnavailable = true
+                }
             } catch (e: Exception) {
                 micFailed = true
             }
@@ -146,6 +179,10 @@ class InternalAudioRecorder(
         try { record?.stop() } catch (e: Exception) { }
         record?.release()
         record = null
+        try { noiseSuppressor?.release() } catch (e: Exception) { }
+        noiseSuppressor = null
+        try { echoCanceler?.release() } catch (e: Exception) { }
+        echoCanceler = null
         try { micRecord?.stop() } catch (e: Exception) { }
         micRecord?.release()
         micRecord = null
