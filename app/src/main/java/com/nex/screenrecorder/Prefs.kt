@@ -35,6 +35,8 @@ data class RecSettings(
     val audioBitrate: Int = 128, // Kbps: 64 / 128 / 256 / 320
     val gameVolume: Int = 100,   // persen, khusus Internal + MIC
     val micVolume: Int = 100,    // persen, khusus Internal + MIC
+    val noiseReduction: Boolean = false, // peredam kebisingan (khusus Internal + MIC)
+    val echoCancel: Boolean = false,     // pembatal gema (khusus Internal + MIC)
     val triggerMode: Int = TRIG_CLICK,
     val triggerSide: Int = SIDE_RIGHT,
     val triggerSens: Int = 2,    // 0 paling tidak sensitif, 1 kurang, 2 bawaan, 3 lebih sensitif
@@ -60,6 +62,8 @@ object Prefs {
             audioBitrate = s.getInt("audio_kbps", 128),
             gameVolume = s.getInt("vol_game", 100),
             micVolume = s.getInt("vol_mic", 100),
+            noiseReduction = s.getBoolean("noise_nr", false),
+            echoCancel = s.getBoolean("echo_aec", false),
             triggerMode = s.getInt("trig_mode", TRIG_CLICK),
             triggerSide = s.getInt("trig_side", SIDE_RIGHT),
             triggerSens = s.getInt("trig_sens", 2),
@@ -88,6 +92,8 @@ object Prefs {
             .putInt("audio_kbps", r.audioBitrate)
             .putInt("vol_game", r.gameVolume)
             .putInt("vol_mic", r.micVolume)
+            .putBoolean("noise_nr", r.noiseReduction)
+            .putBoolean("echo_aec", r.echoCancel)
             .putInt("trig_mode", r.triggerMode)
             .putInt("trig_side", r.triggerSide)
             .putInt("trig_sens", r.triggerSens)
